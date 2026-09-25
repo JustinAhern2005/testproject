@@ -1,0 +1,99 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>Probuca — Nouvelle spécialiste</title>
+<style>
+  @font-face { font-family: 'Inter Tight'; font-weight: 300; src: url(node_modules/@fontsource/inter-tight/files/inter-tight-latin-300-normal.woff2) format('woff2'); }
+  @font-face { font-family: 'Inter Tight'; font-weight: 400; src: url(node_modules/@fontsource/inter-tight/files/inter-tight-latin-400-normal.woff2) format('woff2'); }
+  @font-face { font-family: 'Inter Tight'; font-weight: 500; src: url(node_modules/@fontsource/inter-tight/files/inter-tight-latin-500-normal.woff2) format('woff2'); }
+
+  html, body { margin: 0; background: #000; overflow: hidden; }
+  #stage {
+    position: relative; width: 1920px; height: 1080px; overflow: hidden;
+    transform-origin: 0 0; color: #000;
+    font-family: 'Inter Tight', 'Helvetica Neue', Arial, sans-serif; font-weight: 400;
+  }
+  canvas { position: absolute; inset: 0; }
+  .a { opacity: 0; will-change: transform, opacity; }
+  .col { position: absolute; top: 0; bottom: 0; display: flex; flex-direction: column; justify-content: center; }
+  .rule { height: 2px; background: currentColor; transform-origin: 0 50%; }
+
+  /* Scene 1: lockup, like the site header */
+  .lockup { left: 150px; width: 780px; }
+  .lockup .word { font-size: 168px; font-weight: 400; letter-spacing: -.01em; line-height: .9; }
+  .lockup .tag { font-size: 30px; line-height: 1.15; margin-top: 30px; letter-spacing: .01em; }
+  .lockup .welcome { font-size: 30px; line-height: 1.3; margin-top: 64px; }
+  .lockup .rule { margin-top: 64px; width: 620px; }
+
+  /* Header bug */
+  .bug { position: absolute; top: 56px; left: 72px; display: flex; align-items: flex-end; gap: 16px; }
+  .bug .word { font-size: 56px; line-height: .8; }
+  .bug .tag { font-size: 13px; line-height: 1.15; padding-bottom: 1px; }
+
+  /* Scene 2 */
+  .announce { left: 150px; width: 900px; }
+  .eyebrow { font-size: 26px; font-weight: 500; letter-spacing: .02em; }
+  .announce .headline { font-size: 116px; font-weight: 400; line-height: .98; letter-spacing: -.015em; margin-top: 40px; }
+
+  /* Scene 3 */
+  .intro { left: 1380px; width: 470px; }
+  .intro .name { font-size: 76px; font-weight: 500; line-height: 1; letter-spacing: -.01em; margin-top: 28px; white-space: nowrap; }
+  .intro .rule { margin-top: 36px; }
+  .intro .spec { font-size: 25px; font-weight: 500; margin-top: 30px; }
+  .intro .join { font-size: 25px; font-weight: 300; margin-top: 14px; line-height: 1.35; }
+
+  /* Scene 4 (on black) */
+  .end { left: 900px; width: 900px; color: #fff; }
+  .end .date { font-size: 128px; font-weight: 400; line-height: .95; letter-spacing: -.015em; }
+  .end .rule { margin-top: 48px; width: 760px; }
+  .end .cta { font-size: 26px; font-weight: 500; margin-top: 40px; color: var(--coral); }
+  .end .url { font-size: 64px; font-weight: 400; margin-top: 14px; }
+  .end .addr { font-size: 24px; font-weight: 300; margin-top: 10px; }
+  .bug.w { color: #fff; }
+</style>
+<script type="importmap">
+{ "imports": {
+  "three": "./node_modules/three/build/three.module.js",
+  "three/addons/": "./node_modules/three/examples/jsm/"
+} }
+</script>
+</head>
+<body>
+<div id="stage">
+  <canvas id="gl" width="1920" height="1080"></canvas>
+
+  <div class="col lockup">
+    <div class="word a" data-in="1.4" data-out="6.3" data-dy="40">PROBUCA</div>
+    <div class="tag a" data-in="2.0" data-out="6.3"><span class="t1"></span><br><span class="t2"></span></div>
+    <div class="rule a" data-in="3.0" data-out="6.3" data-kind="line"></div>
+    <div class="welcome a" data-in="3.6" data-out="6.3">DRE MIREILLE FAUCHER ET ASSOCIÉS<br>VOUS ANNONCENT UNE BONNE NOUVELLE</div>
+  </div>
+
+  <div class="bug a" data-in="6.6" data-out="10.2" data-kind="soft"><div class="word">PROBUCA</div><div class="tag"><span class="t1"></span><br><span class="t2"></span></div></div>
+
+  <div class="col announce">
+    <div class="eyebrow a" data-in="6.8" data-out="10.2" id="eyebrow"></div>
+    <div class="headline a" data-in="7.1" data-out="10.2" data-dy="60" id="headline"></div>
+  </div>
+
+  <div class="col intro">
+    <div class="eyebrow a" data-in="14.7" data-out="21.8" id="welcome" style="color: var(--pink)"></div>
+    <div class="name a" data-in="15.0" data-out="21.8" id="name"></div>
+    <div class="rule a" data-in="15.5" data-out="21.8" data-kind="line"></div>
+    <div class="spec a" data-in="15.8" data-out="21.8" id="spec"></div>
+    <div class="join a" data-in="16.2" data-out="21.8" id="join"></div>
+  </div>
+
+  <div class="bug w a" data-in="24.4" data-kind="soft"><div class="word">PROBUCA</div><div class="tag"><span class="t1"></span><br><span class="t2"></span></div></div>
+  <div class="col end">
+    <div class="date a" data-in="24.0" data-dy="60" id="date"></div>
+    <div class="rule a" data-in="24.8" data-kind="line"></div>
+    <div class="cta a" data-in="25.4" id="cta"></div>
+    <div class="url a" data-in="25.8" id="url"></div>
+    <div class="addr a" data-in="26.2" id="addr"></div>
+  </div>
+</div>
+<script type="module" src="scene.js"></script>
+</body>
+</html>
