@@ -15,7 +15,7 @@ Built on probuca.ca's identity: white and black blocks, uppercase grotesk type (
 
 All copy, colours and the photo path are in **`config.js`**. Before publishing, replace:
 
-- `name`: currently the placeholder `DRE PRÉNOM NOM` (long names shrink to fit automatically)
+- `name`: `DRE SAVARIA` (add her first name if wanted; long names shrink to fit automatically)
 - `specialty`: currently `SPÉCIALISTE EN — À CONFIRMER`
 
 ## Commands

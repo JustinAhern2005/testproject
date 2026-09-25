@@ -8,7 +8,7 @@ export const CONFIG = {
   headline: 'ACCUEILLENT<br>UNE NOUVELLE<br>SPÉCIALISTE',
 
   welcome: 'BIENVENUE À',
-  name: 'DRE PRÉNOM NOM',                    // TODO: specialist's full name
+  name: 'DRE SAVARIA',
   specialty: 'SPÉCIALISTE EN — À CONFIRMER', // TODO: e.g. « SPÉCIALISTE EN PARODONTIE »
   joinLine: "Elle se joint à notre équipe à Rosemère.",
 
