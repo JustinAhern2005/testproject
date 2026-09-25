@@ -2,14 +2,14 @@
 
 **Deliverable:** `probuca-nouvelle-specialiste.mp4` (1920×1080, 30 fps, H.264 + AAC, 30 s)
 
-Built on probuca.ca's identity: white and black blocks, uppercase grotesk type (Inter Tight), and the line **P mark** (three squares plus a half-circle) in brand pink `#CF5878` and coral `#EA796B`. The mark is rebuilt as extruded 3D geometry and animated in Three.js, then rendered frame by frame in headless Chromium.
+Built on probuca.ca's identity: white and black blocks, uppercase grotesk type (Inter Tight), and the line **P mark** (three squares plus a half-circle). The mark animates in the site's pink `#CF5878` and resolves to the official lockup (mark + PROBUCA at the bottom right): black on white for the opening, white on black for the close. The mark is rebuilt as extruded 3D geometry and animated in Three.js, then rendered frame by frame in headless Chromium.
 
 | Time | Scene |
 |---|---|
-| 0–6 s | The four pieces of the P mark fly in and lock together. PROBUCA lockup: « Implantologie + Chirurgie buccale et maxillo-faciale » |
+| 0–6 s | The four pieces of the P mark fly in and lock together, then settle into the official black logo lockup with « Implantologie + Chirurgie buccale et maxillo-faciale » |
 | 6–10 s | The mark opens up in 3D: « Dre Mireille Faucher et associés accueillent une nouvelle spécialiste » |
 | 10–22 s | Camera pushes into the mark. Her portrait is revealed inside its centre square, with « Bienvenue à », name and specialty |
-| 22–30 s | Black wipe (like the site's black sections). The mark re-forms in coral: « Dès décembre 2026 », « Prenez rendez-vous », PROBUCA.CA, address |
+| 22–30 s | Black wipe (like the site's black sections). The lockup re-forms in white: « Dès décembre 2026 », « Prenez rendez-vous », PROBUCA.CA, address |
 
 ## Editing
 

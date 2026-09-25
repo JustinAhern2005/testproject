@@ -26,7 +26,7 @@ for k, ch in enumerate(chords):
             L += v * (1 - pan); R += v * pan
 
 # Glassy chimes on text reveals.
-for when, notes in [(1.4, [81, 88]), (3.2, [86]), (7.1, [83, 90]), (13.0, [81, 88, 93]), (15.0, [90]), (24.0, [78, 85, 90]), (25.8, [88])]:
+for when, notes in [(4.0, [81, 88]), (4.6, [86]), (7.7, [83, 90]), (13.0, [81, 88, 93]), (15.0, [90]), (24.0, [78, 85, 90]), (25.8, [88])]:
     for n_i, m in enumerate(notes):
         s = when + n_i * 0.09; f = hz(m); i0 = int(s * SR); x = t[i0:] - s
         v = (np.sin(2 * np.pi * f * x) + 0.3 * np.sin(2 * np.pi * f * 2.76 * x) * np.exp(-x * 3)) * np.exp(-x * 1.6) * 0.06

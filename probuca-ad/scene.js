@@ -82,6 +82,25 @@ const PIECES = [
   return { ...p, i, mesh, home: new THREE.Vector3(p.center[0] - 1.5, p.center[1] - 1.5, 0) };
 });
 
+// Wordmark of the official lockup: set to the right of the bottom square, on its baseline.
+const wordMat = new THREE.MeshBasicMaterial({ transparent: true, depthWrite: false, toneMapped: false });
+const word = new THREE.Mesh(new THREE.PlaneGeometry(1, 1), wordMat);
+mark.add(word);
+async function buildWordmark() {
+  await document.fonts.load('400 200px "Inter Tight"');
+  const c = document.createElement('canvas'), g = c.getContext('2d');
+  const font = '400 200px "Inter Tight"'; g.font = font;
+  const m = g.measureText(CONFIG.brand);
+  const asc = m.actualBoundingBoxAscent, wpx = Math.ceil(m.width) + 8;
+  c.width = wpx; c.height = Math.ceil(asc) + 8;
+  g.font = font; g.fillStyle = '#fff'; g.fillText(CONFIG.brand, 4, c.height - 4);
+  const tex = new THREE.CanvasTexture(c); tex.colorSpace = THREE.SRGBColorSpace; tex.anisotropy = 8;
+  wordMat.map = tex; wordMat.needsUpdate = true;
+  const width = 1.7, height = width * c.height / c.width;
+  word.scale.set(width, height, 1);
+  word.position.set(-1.5 + 2 + 0.42 + width / 2, -1.5 + height / 2 - 4 / c.height * height, 0);
+}
+
 // Portrait, seated inside the centre square of the mark.
 let photoLoaded; const photoReady = new Promise((r) => (photoLoaded = r));
 const photoTex = new THREE.TextureLoader().load(CONFIG.photo, photoLoaded);
@@ -106,19 +125,21 @@ PIECES[2].mesh.add(photo); // travels with the centre square
 
 // ---------- mark choreography ----------
 // Group keyframes: [time, x, y, z, rotX, rotY, scale]
+const LOCKUP_W = 3 + 0.42 + 1.7;        // mark + gap + wordmark, in grid units
+const LX = -(LOCKUP_W / 2 - 1.5) * 1.3;  // centres the official lockup for the opening
 const XSQ = -3.36; // puts the centre square on the left third for the portrait
 const KEYS = [
-  [0.0, 3.1, -0.1, 0, 0.30, 0.95, 1.3],
-  [4.6, 3.1, -0.1, 0, 0.03, 0.08, 1.3],
-  [6.4, 3.2, -0.1, 0, -0.02, -0.06, 1.3],
-  [9.2, 3.5, 0.0, 0, 0.22, -0.65, 1.2],
+  [0.0, LX, 0.35, 0, 0.30, 0.95, 1.3],
+  [4.4, LX, 0.35, 0, 0.02, 0.0, 1.3],
+  [6.0, LX, 0.35, 0, 0.0, 0.0, 1.3],
+  [8.8, 3.4, 0.0, 0, 0.22, -0.6, 1.2],
   [10.4, 3.5, 0.0, 0, 0.1, -0.45, 1.2],
   [12.6, XSQ, 0.0, 0, 0.0, 0.08, 3.93],
   [14.8, XSQ, 0.0, 0, 0.0, 0.02, 3.93],
   [21.8, XSQ + 0.1, 0.0, 0, 0.0, -0.04, 3.93],
-  [24.2, -3.6, 0.0, 0, 0.12, 0.55, 1.3],
-  [26.6, -3.6, 0.0, 0, 0.0, 0.06, 1.3],
-  [30.0, -3.6, 0.0, 0, 0.0, -0.06, 1.3],
+  [24.2, -4.6, 0.0, 0, 0.12, 0.55, 1.05],
+  [26.6, -4.6, 0.0, 0, 0.0, 0.04, 1.05],
+  [30.0, -4.6, 0.0, 0, 0.0, -0.03, 1.05],
 ];
 const cr = (p0, p1, p2, p3, u) => {
   const u2 = u * u, u3 = u2 * u;
@@ -147,7 +168,7 @@ function updateOverlay(t) {
 
 // ---------- per-frame update ----------
 const tmp = new THREE.Vector3();
-const pinkC = new THREE.Color(C.pink), coralC = new THREE.Color(C.coral);
+const pinkC = new THREE.Color(C.pink), blackC = new THREE.Color(C.black), whiteC = new THREE.Color(C.white);
 function update(t) {
   camera.position.set(Math.sin(t * 0.3) * 0.15, Math.cos(t * 0.23) * 0.1, 12);
   camera.lookAt(0, 0, 0);
@@ -172,8 +193,14 @@ function update(t) {
       p.spin[2] * (3.2 * (1 - a) + e * 0.5));
   }
 
-  // Brand pink on white, coral on black (both are used on probuca.ca).
-  markMat.color.copy(pinkC).lerp(coralC, smooth(range(t, 22.6, 23.8)));
+  // Pink while in motion (as on probuca.ca); resolves to the official black logo for the opening
+  // and to white on the closing black card.
+  markMat.color.copy(pinkC)
+    .lerp(blackC, smooth(range(t, 3.9, 4.7)) * (1 - smooth(range(t, 6.2, 7.4))))
+    .lerp(whiteC, smooth(range(t, 22.6, 23.8)));
+  wordMat.color.copy(blackC).lerp(whiteC, smooth(range(t, 22.6, 23.8)));
+  wordMat.opacity = smooth(range(t, 4.2, 5.0)) * (1 - smooth(range(t, 6.0, 6.6))) + smooth(range(t, 24.6, 25.5));
+  word.visible = wordMat.opacity > 0.001;
 
   // Portrait reveal inside the centre square.
   photoMat.uniforms.uReveal.value = easeInOut(range(t, 12.8, 14.2));
@@ -188,7 +215,7 @@ function update(t) {
 }
 
 // ---------- boot ----------
-const ready = Promise.all([document.fonts.ready, photoReady]);
+const ready = Promise.all([document.fonts.ready, photoReady, buildWordmark()]);
 ready.then(() => { // shrink a long name to fit its column
   const el = $('name'); let size = 76;
   while (el.scrollWidth > 470 && size > 40) el.style.fontSize = (size -= 2) + 'px';
